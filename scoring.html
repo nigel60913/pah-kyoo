@@ -218,7 +218,7 @@
 
   <div class="topbar">
     <a class="back-link" href="index.html">← 返回</a>
-    <span class="topbar-title"><span class="dot"></span>匹克球計分板</span>
+    <span class="topbar-title"><span class="dot"></span><span id="boardTitle">匹克球計分板</span></span>
     <button class="icon-btn" id="settingsBtn" aria-label="設定">⚙</button>
   </div>
 
@@ -275,8 +275,9 @@
     <div class="sheet-row">
       <label>比賽模式</label>
       <div class="mode-toggle">
-        <button class="mode-btn active" data-mode="doubles">雙打</button>
-        <button class="mode-btn" data-mode="singles">單打</button>
+        <button class="mode-btn active" data-mode="doubles">匹克球雙打</button>
+        <button class="mode-btn" data-mode="singles">匹克球單打</button>
+        <button class="mode-btn" data-mode="general">一般球類</button>
       </div>
     </div>
     <div class="sheet-row" style="flex-direction:column; align-items:flex-start;">
@@ -284,6 +285,12 @@
       <div class="name-inputs">
         <input id="nameA" value="甲隊" maxlength="10">
         <input id="nameB" value="乙隊" maxlength="10">
+      </div>
+    </div>
+    <div class="sheet-row" style="flex-direction:column; align-items:flex-start;">
+      <label for="targetScore">一般球類勝分</label>
+      <div class="name-inputs">
+        <input id="targetScore" type="number" min="1" value="21">
       </div>
     </div>
     <button class="sheet-cta" id="sheetCloseBtn">完成</button>
@@ -301,11 +308,12 @@
 
 <script>
 const scoreState = {
-  mode:'doubles',
+  mode:new URLSearchParams(location.search).get('mode') === 'general' ? 'general' : 'doubles',
   score:{A:0,B:0},
   serving:'A',
   serverNumber:2,
   firstServiceOfGame:true,
+  targetScore:21,
   over:false
 };
 let history = [];
@@ -330,6 +338,8 @@ const els = {
   winOverlay: document.getElementById('winOverlay'),
   winName: document.getElementById('winName'),
   winFinal: document.getElementById('winFinal'),
+  boardTitle: document.getElementById('boardTitle'),
+  targetScore: document.getElementById('targetScore'),
 };
 
 function snapshot(){
@@ -355,6 +365,12 @@ function scorePoint(){
 /* 失分換人：發球方輸掉這一球，只換發球權，不加分 */
 function sideOut(){
   if(scoreState.over) return;
+  if(scoreState.mode === 'general'){
+    pushHistory();
+    scoreState.serving = otherTeam(scoreState.serving);
+    renderScore();
+    return;
+  }
   pushHistory();
   if(navigator.vibrate) navigator.vibrate([10,40,10]);
 
@@ -387,7 +403,8 @@ function adjustScore(team, delta){
 function checkWin(){
   const {A,B} = scoreState.score;
   const leader = A > B ? 'A' : (B > A ? 'B' : null);
-  if(leader && scoreState.score[leader] >= 11 && Math.abs(A - B) >= 2){
+  const target = scoreState.mode === 'general' ? scoreState.targetScore : 11;
+  if(leader && scoreState.score[leader] >= target && Math.abs(A - B) >= 2){
     scoreState.over = true;
     els.winName.textContent = `🎉 ${teamName(leader)}獲勝！`;
     els.winFinal.textContent = `${A} - ${B}`;
@@ -434,12 +451,18 @@ function renderScore(){
 
   const serverScore = scoreState.score[scoreState.serving];
   const receiverScore = scoreState.score[otherTeam(scoreState.serving)];
-  els.callNum.textContent = scoreState.mode === 'doubles'
-    ? `${serverScore} - ${receiverScore} - ${scoreState.serverNumber}`
-    : `${serverScore} - ${receiverScore}`;
-
-  els.scoreSubLabel.textContent = `${teamName(scoreState.serving)} +1 分`;
-  els.sideoutSubLabel.textContent = `${teamName(scoreState.serving)} 換發球，不加分`;
+  els.boardTitle.textContent = scoreState.mode === 'general' ? '一般球類計分板' : '匹克球計分板';
+  if(scoreState.mode === 'general'){
+    els.callNum.textContent = `${teamName(scoreState.serving)} 控球／發球 · ${scoreState.score.A} - ${scoreState.score.B}`;
+    els.scoreSubLabel.textContent = `${teamName(scoreState.serving)} +1 分`;
+    els.sideoutSubLabel.textContent = `切換控球／發球方`;
+  } else {
+    els.callNum.textContent = scoreState.mode === 'doubles'
+      ? `${serverScore} - ${receiverScore} - ${scoreState.serverNumber}`
+      : `${serverScore} - ${receiverScore}`;
+    els.scoreSubLabel.textContent = `${teamName(scoreState.serving)} +1 分`;
+    els.sideoutSubLabel.textContent = `${teamName(scoreState.serving)} 換發球，不加分`;
+  }
   els.scoreBtn.disabled = scoreState.over;
   els.sideoutBtn.disabled = scoreState.over;
 }
@@ -466,6 +489,7 @@ document.querySelectorAll('.mode-btn').forEach(btn=>{
     document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
     this.classList.add('active');
     scoreState.mode = this.dataset.mode;
+    scoreState.targetScore = Math.max(1, parseInt(els.targetScore.value,10) || 21);
     resetScore();
   });
 });
@@ -477,6 +501,14 @@ document.querySelectorAll('.mode-btn').forEach(btn=>{
   });
 });
 
+els.targetScore.addEventListener('input', ()=>{
+  scoreState.targetScore = Math.max(1, parseInt(els.targetScore.value,10) || 21);
+  checkWin();
+  renderScore();
+});
+if(scoreState.mode === 'general'){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active', b.dataset.mode === 'general'));
+}
 renderScore();
 </script>
 </body>
