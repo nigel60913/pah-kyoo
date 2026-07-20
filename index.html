@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>揪打｜打球囉</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -16,27 +16,7 @@
 </style>
 </head>
 <body>
-<header class="nav"><div class="nav-inner"><a class="logo" href="#top"><span class="dot"></span>揪打</a><nav class="nav-links"><a href="#calendar">行事曆</a><a href="#activities">活動</a><a href="#host">發起活動</a><a href="#scoring">計分</a><a href="#firebase">Firebase 設定</a></nav><div class="nav-cta"><span class="user-pill" id="userPill"></span><button class="btn btn-ghost btn-sm" id="loginBtn">Google 登入</button><a class="btn btn-orange btn-sm" href="#host">發起揪團</a></div></div></header>
-<main id="top">
-<div class="hero"><div class="wrap hero-inner"><div><span class="eyebrow">🏸 羽球．🎾 匹克球．🏀 一般球類</span><h1>約打球、報名、<br><em>分帳與計分</em>一次搞定</h1><p class="lead">主辦人建立活動並顯示日期、人員、場地、費用；參與者可加入活動、查看 LINE Pay 或網銀資訊，系統會依參與人數自動平分費用。</p><div class="hero-actions"><a class="btn btn-orange" href="#activities">瀏覽活動</a><a class="btn btn-ghost" href="#host">立即發起活動</a></div></div><div class="feature-card"><h3>功能總覽</h3><div class="mini-list"><div class="mini-row"><b>發起活動</b><span>日期、人員、場地、費用</span></div><div class="mini-row"><b>加入活動</b><span>一鍵報名／候補</span></div><div class="mini-row"><b>現場計分</b><span>匹克球與一般球類</span></div><div class="mini-row"><b>付款資訊</b><span>LINE Pay／網銀分帳</span></div></div></div></div></div>
-<section id="calendar"><div class="wrap"><div class="calendar-shell"><div class="calendar-head"><div class="calendar-title"><span class="avatar">🏓</span><span id="calendarMonth">7月</span></div><div class="calendar-tools"><button class="calendar-toggle active" id="monthViewBtn" type="button">本月</button><button class="calendar-toggle" id="weekViewBtn" type="button">本週</button><a class="btn btn-orange btn-sm" href="#host">＋新增活動</a></div></div><div class="calendar-grid" id="calendarGrid"></div></div></div></section>
-<section id="activities"><div class="wrap"><div class="section-head"><div><div class="section-tag">近期活動</div><h2>找一場適合你的球局</h2><p>卡片顯示日期、已報名人員、場地、總費用與每人分攤金額；登入 Google 後即可加入並同步到 Firebase。</p></div></div><div class="tabs" id="tabs"><button class="tab active" data-filter="all">全部</button><button class="tab" data-filter="badminton">🏸 羽球</button><button class="tab" data-filter="pickleball">🎾 匹克球</button><button class="tab" data-filter="general">🏀 一般球類</button></div><div class="grid" id="cardGrid"></div></div></section>
-<section id="host"><div class="wrap"><div class="section-head"><div><div class="section-tag">發起活動</div><h2>建立你的下一場球局</h2><p>送出後會新增到本機清單；完成 Firebase 設定後會同步寫入 Firestore。</p></div></div><form class="panel form-grid" id="eventForm"><div class="field"><label for="sport">運動類型</label><select id="sport"><option value="pickleball">匹克球</option><option value="badminton">羽球</option><option value="general">一般球類</option></select></div><div class="field"><label for="date">日期</label><input id="date" type="date" required></div><div class="field"><label for="startTime">開始時間</label><input id="startTime" type="time" required></div><div class="field"><label for="endTime">結束時間</label><input id="endTime" type="time" required></div><div class="field full"><label for="venue">場地</label><input id="venue" placeholder="例：台中國際匹克球館 A 場" required></div><div class="field"><label for="maxPeople">人數上限</label><input id="maxPeople" type="number" min="2" value="8" required></div><div class="field"><label for="totalCost">總費用</label><input id="totalCost" type="number" min="0" value="1600" required></div><div class="field"><label for="linePay">LINE Pay</label><input id="linePay" placeholder="LINE Pay ID 或付款連結"></div><div class="field"><label for="bankInfo">網銀資訊</label><input id="bankInfo" placeholder="銀行代碼／帳號後五碼"></div><div class="field full"><label for="note">備註</label><textarea id="note" rows="3" placeholder="程度、用球、交通、取消規則等"></textarea></div><div class="split-preview" id="splitPreview">目前預估每人 NT$200</div><div class="field full"><button class="btn btn-solid" type="submit">新增活動</button></div></form></div></section>
-<section id="scoring" style="background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="wrap"><div class="section-head"><div><div class="section-tag">計分工具</div><h2>匹克球與一般球類都能記分</h2><p>匹克球頁面支援雙打發球員喊分；一般球類頁面提供自由設定勝分與隊名的通用計分板。</p></div></div><div class="score-links"><div class="score-tile"><h3>匹克球計分</h3><p>自動顯示「發球方分數－接球方分數－發球員編號」，適合手機場邊使用。</p><a class="btn btn-orange" href="scoring.html?mode=pickleball">開啟匹克球計分</a></div><div class="score-tile"><h3>一般球類計分</h3><p>籃球、排球、桌球或臨時計分皆可使用，可用設定切換為通用模式。</p><a class="btn btn-ghost" href="scoring.html?mode=general">開啟一般計分</a></div></div></div></section>
-<section id="how"><div class="wrap"><div class="section-head"><div><div class="section-tag">怎麼玩</div><h2>三步驟，開打不囉嗦</h2></div></div><div class="steps"><div class="step"><div class="step-no">01</div><h3>Google 登入</h3><p>用 Firebase Authentication 啟用 Google 登入，保留主辦與報名身份。</p></div><div class="step"><div class="step-no">02</div><h3>建立／加入活動</h3><p>填場地、日期、人數與總費用，參與者一鍵加入，滿額自動顯示候補。</p></div><div class="step"><div class="step-no">03</div><h3>分帳與收款</h3><p>依目前參與人數平分費用，公開 LINE Pay 或網銀資訊，主辦可追蹤繳費狀態。</p></div></div></div></section>
-<section id="firebase"><div class="wrap"><div class="section-head"><div><div class="section-tag">Firebase / Google 登入設定</div><h2>把示範資料改成雲端同步</h2><p>本頁已保留 Firebase 串接點，將下方設定填入程式碼即可啟用。</p></div></div><div class="panel"><ol><li>到 Firebase Console 建立專案，新增 Web App，複製 firebaseConfig。</li><li>Authentication → Sign-in method 啟用 Google，Authorized domains 加入你的網域。</li><li>Firestore Database 建立資料庫，新增 <code>events</code> collection。</li><li>在本檔案搜尋 <code>firebaseConfig</code>，填入設定並取消 <code>FIREBASE_ENABLED</code>。</li><li>部署前先把 Firestore Rules 調整為「登入者可讀寫活動」，正式上線再加強主辦權限。</li><li>LINE 通知可以串：建議用 Cloud Functions 呼叫 LINE Messaging API 或 LINE Notify 類型的後端 webhook；不要把 Channel access token 放在前端。活動新增或有人加入後，由前端寫入 Firestore，再由後端觸發推播。</li></ol><pre><code>rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /events/{eventId} {
-      allow read: if true;
-      allow create, update: if request.auth != null;
-      allow delete: if request.auth != null && request.auth.uid == resource.data.hostUid;
-    }
-  }
-}</code></pre><p class="meta"><b>LINE 推播做法：</b>建立 LINE Developers Provider 與 Messaging API Channel，把 Channel access token 存在 Firebase Functions 環境變數；監聽 <code>events</code> 新增或更新後，用後端送出「新活動／有人加入／付款提醒」。前端本頁已在建立與加入活動時呼叫 <code>sendLineNotification()</code>，目前為示範 log，正式上線請改成呼叫你的 Cloud Function HTTPS endpoint。</p><pre><code>exports.notifyLineOnEventWrite = onDocumentWritten('events/{eventId}', async (event) => {
-  // 用 Functions Secret 讀 LINE token，組訊息後 POST 到 LINE Messaging API
-});</code></pre></div></div></section>
-</main><footer><div class="wrap footer-inner"><div>© 2026 揪打 JioDa．找朋友打球最簡單的方式</div><div>Firebase Ready．Google Login Ready</div></div></footer>
+
 <div class="modal-mask" id="modalMask"><div class="modal"><div class="modal-head"><h3 id="modalTitle">參加者名單</h3><button class="modal-close" type="button" onclick="closeModal()">✕</button></div><div class="modal-body" id="modalBody"></div></div></div>
 <script type="module">
 const FIREBASE_ENABLED = true;
